@@ -8,19 +8,19 @@ metadata:
     {{- if eq $.Values.proxy.provider "ambassador" }}
     getambassador.io/config: |
       ---
-      apiVersion: ambassador/v1
+      apiVersion: ambassador/v2
       kind: TCPMapping
       name: {{ .Values.node.name }}-tcp
       port: {{ .Values.proxy.quorumport }}
       service: {{ .Values.node.name }}.{{ .Values.metadata.namespace }}:{{ .Values.node.ports.quorum }}
       ---
-      apiVersion: ambassador/v1
+      apiVersion: ambassador/v2
       kind: TCPMapping
       name: {{ .Values.node.name }}-rpc
       port: {{ .Values.proxy.rpcport }}
       service: {{ .Values.node.name }}.{{ .Values.metadata.namespace }}:{{ .Values.node.ports.rpc }}
       ---
-      apiVersion: ambassador/v1
+      apiVersion: ambassador/v2
       kind: Mapping
       name: {{ .Values.node.name }}-tm      
       host: {{ .Values.proxy.external_url }}:{{ .Values.proxy.portTM }}
@@ -29,7 +29,7 @@ metadata:
       service: https://{{ .Values.node.name }}.{{ .Values.metadata.namespace }}:{{ .Values.node.ports.tm }}
       tls: {{ .Values.node.name }}_mapping_tlscontext
       ---
-      apiVersion: ambassador/v1
+      apiVersion: ambassador/v2
       kind: TLSContext
       name: {{ .Values.node.name }}_mapping_tlscontext
       hosts:
@@ -37,7 +37,7 @@ metadata:
       secret: {{ .Values.node.name }}-ambassador-certs
       {{- if eq $.Values.node.consensus "raft" }}
       ---
-      apiVersion: ambassador/v1
+      apiVersion: ambassador/v2
       kind: TCPMapping
       name: {{ .Values.node.name }}-raft
       port: {{ .Values.proxy.portRaft }}
