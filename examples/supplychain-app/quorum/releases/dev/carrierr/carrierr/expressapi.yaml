@@ -24,10 +24,10 @@ spec:
       role: vault-role
       authpath: quorumcarrierr
     images:
-      alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+      alpineutils: adopblockchaincloud0502.azurecr.io/alpine-utils:1.0
     expressapp:
       serviceType: ClusterIP
-      image: index.docker.io/hyperledgerlabs/supplychain_quorum:express_app_latest
+      image: adopblockchaincloud0502.azurecr.io/supplychain_quorum:express_app_latest
       pullPolicy: Always
       pullSecrets: regcred
       nodePorts:
