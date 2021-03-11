@@ -37,8 +37,8 @@ spec:
       env:
         geth_address: {{ geth_address }}
         node_subject: {{ peer_data.subject }}
-        node_organization: {{ organization_data.unit }}
-        node_organization_unit: {{ organization_data.unit | lower }}
+        node_organization: {{ organization_data.name }}
+        node_organization_unit: {{ organization_data.name | lower }}
         protocol: {{ network.config.consensus }}
     proxy:
       provider: {{ network.env.proxy }}

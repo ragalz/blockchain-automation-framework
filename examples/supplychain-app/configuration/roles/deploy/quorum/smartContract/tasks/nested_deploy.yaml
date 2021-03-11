@@ -62,6 +62,14 @@
 
 ############################################################################################
 
+- name: VARIABLE DEBUG
+  ansible.builtin.debug:
+    msg:
+    - "CHECK: {{ check }}"
+    - "CONTRACT NAME: {{ contract_name }}"
+    - "CONTRACT ADDRESS: {{ contract_address }}"
+
+
 # delete node_module directory
 - name: Remove node_module directory 
   file:

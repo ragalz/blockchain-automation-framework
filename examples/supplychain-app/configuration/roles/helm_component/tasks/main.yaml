@@ -15,6 +15,17 @@
 # This task creates the value file for the helm release
 # This is done by consuming a template file which is passes as a variable by the role
 # including this helm_component role
+
+- name: VARIABLE DEBUG
+  ansible.builtin.debug:
+    msg:
+    - "values_dir: {{ values_dir }}"
+    - "name: {{ name }}"
+    - "component_name: {{ component_name }}"
+    - "organization_data: {{ organization_data }}"
+    - "helm_templates: {{ helm_templates }}"
+    - "type: {{ type }}"
+
 - name: "create value file for {{ component_name }}"
   template:
     src: "{{ helm_templates[type] | default('helm_component.tpl') }}"
