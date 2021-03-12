@@ -1,0 +1,83 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: storerstorertessera
+  namespace: storer-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: storerstorertessera
+  helmVersion: v3
+  chart:
+    git: https://github.com/ragalz/blockchain-automation-framework.git
+    ref: feature/quorumAnnonations
+    path: platforms/quorum/charts/node_tessera  
+  values:
+    replicaCount: 1
+    metadata:
+      namespace: storer-quo
+      labels:
+    images:
+      node: quorumengineering/quorum:2.5.0
+      alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+      tessera: quorumengineering/tessera:0.11
+      busybox: busybox
+      mysql: mysql/mysql-server:5.7
+    node:
+      name: storer
+      status: default
+      consensus: raft
+      subject: O=Storer,OU=Storer,L=40.73/-74/New York,C=US
+      mountPath: /etc/quorum/qdata
+      imagePullSecret: regcred
+      keystore: keystore_1
+      
+      servicetype: ClusterIP
+      lock: false
+      ports:
+        rpc: 8546
+        raft: 50401
+        tm: 8443
+        quorum: 21000
+        db: 3306
+      dbname: demodb
+      mysqluser: demouser
+    vault:
+      address: http://vault.internal.demo.aws.blockchaincloudpoc.com:9001
+      secretprefix: secret/storer-quo/crypto/storer
+      serviceaccountname: vault-auth
+      keyname: quorum
+      tm_keyname: transaction
+      role: vault-role
+      authpath: quorumstorer
+    tessera:
+      dburl: "jdbc:mysql://storer:3306/demodb"
+      dbusername: demouser
+      url: "https://storer.rc.demo.aws.blockchaincloudpoc.com:8443"
+      othernodes:
+        - url: https://carrierr.rc.demo.aws.blockchaincloudpoc.com:8443
+        - url: https://manufacturerr.rc.demo.aws.blockchaincloudpoc.com:8443
+        - url: https://storer.rc.demo.aws.blockchaincloudpoc.com:8443
+        - url: https://warehouser.rc.demo.aws.blockchaincloudpoc.com:8443
+      tls: "STRICT"
+      trust: "TOFU"
+    genesis: ewogICAgImFsbG9jIjogewogICAgICAgICIxMWUwMjEyMTQ0NTMxOWRkMTcyNjYxYWQ1YjJmOWI4ZDhmMzM0MDRmIjogewogICAgICAgICAgICAiYmFsYW5jZSI6ICIxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIgogICAgICAgIH0sCiAgICAgICAgIjQzNjEyZThhMDY2ZmMxOTJmMzU3NmZmNmVhYmQyZmY0ZTM1N2I1MTkiOiB7CiAgICAgICAgICAgICJiYWxhbmNlIjogIjEwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiCiAgICAgICAgfSwKICAgICAgICAiODkzNTgzODI4ZTVjNTJiYzliN2RkY2MwY2ZkYjQ4YjAxYjFlMTA3YiI6IHsKICAgICAgICAgICAgImJhbGFuY2UiOiAiMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIKICAgICAgICB9LAogICAgICAgICI5MDZmNmE4MjBhY2E3MDJmNTJiMjFiMGQ1NDg3MWU1OGQ2NTIwNGM1IjogewogICAgICAgICAgICAiYmFsYW5jZSI6ICIxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIgogICAgICAgIH0KICAgIH0sCiAgICAiY29pbmJhc2UiOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwKICAgICJjb25maWciOiB7CiAgICAgICAgImJ5emFudGl1bUJsb2NrIjogMSwKICAgICAgICAiY2hhaW5JZCI6IDEwLAogICAgICAgICJjb25zdGFudGlub3BsZUJsb2NrIjogMCwKICAgICAgICAiZWlwMTUwQmxvY2siOiAxLAogICAgICAgICJlaXAxNTBIYXNoIjogIjB4MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsCiAgICAgICAgImVpcDE1NUJsb2NrIjogMCwKICAgICAgICAiZWlwMTU4QmxvY2siOiAxLAogICAgICAgICJpc1F1b3J1bSI6IHRydWUsCiAgICAgICAgInBldGVyc2J1cmdCbG9jayI6IDAsCiAgICAgICAgInJhZnRTZWNvbmRzIjogdHJ1ZSwKICAgICAgICAidHhuU2l6ZUxpbWl0IjogMTI4CiAgICB9LAogICAgImRpZmZpY3VsdHkiOiAiMHgwIiwKICAgICJleHRyYURhdGEiOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwKICAgICJnYXNMaW1pdCI6ICIweEUwMDAwMDAwMDAiLAogICAgIm1peGhhc2giOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDY0NzU3MjYxNmM2NTc4NzM2NTY0NmM2NTc4IiwKICAgICJub25jZSI6ICIweDAiLAogICAgInBhcmVudEhhc2giOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwKICAgICJ0aW1lc3RhbXAiOiAiMHgwMCIKfQ==
+    staticnodes: 
+      [
+    "enode://02c4b1406d02e03df28684f0a45d631302a55c2fd34ec28dc30de4902608102574d858c5116dab152ae3f1952bd1898833b9a38dea5ad173632cc3419642d28f@carrierr.rc.demo.aws.blockchaincloudpoc.com:15010?discport=0&raftport=15013",
+    "enode://4b09f6a4f86395e7f7e1193bda98133c17b3c1fd83a90908d3e49427b31c3bc5c11bb41fc031b575e87bc38b617985af01fd5d71430bb48c82a1e54fe82eb682@manufacturerr.rc.demo.aws.blockchaincloudpoc.com:15020?discport=0&raftport=15023",
+    "enode://43c16d97dd9d53c9af21121e4cc6f645570c86d4d9cb9219822561e7269efa6dfcd3b7bba0e4246de40998ff1b0307fd7bbce3083d80d6b36979ccb3d0d4eb2f@storer.rc.demo.aws.blockchaincloudpoc.com:15030?discport=0&raftport=15033",
+    "enode://ee995045efcc4961ff5472da2d14ed6c88ec00fd24ee788b9fd66ba5d1a9e3d5ef4034550ed1facdd60a7fdf2706eb61dd4e5764a74dba5115595436dab5d7c6@warehouser.rc.demo.aws.blockchaincloudpoc.com:15040?discport=0&raftport=15043"
+]
+    proxy:
+      provider: "ambassador"
+      external_url: storer.rc.demo.aws.blockchaincloudpoc.com
+      portTM: 8443
+      rpcport: 15031
+      quorumport: 15030
+  
+      portRaft: 15033
+    storage:
+      storageclassname: awsstorageclass
+      storagesize: 1Gi
+      dbstorage: 1Gi
