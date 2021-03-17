@@ -1,0 +1,49 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: anchorpeer-allchannel-cr
+  namespace: cr-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: anchorpeer-allchannel-cr
+  chart:
+    git: https://github.com/ragalz/blockchain-automation-framework.git
+    ref: feature/newPeerBug
+    path: platforms/hyperledger-fabric/charts/anchorpeer
+  values:
+    metadata:
+      namespace: cr-net
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.0
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+
+    peer:
+      name: peer0
+      address: peer0.cr-net.hf.dev2.aws.blockchaincloudpoc-develop.com:8443
+      localmspid: crMSP
+      loglevel: debug
+      tlsstatus: true
+
+    vault:
+      role: vault-role
+      address: http://vault.internal.dev2.aws.blockchaincloudpoc-develop.com:20001
+      authpath: cr-net-auth
+      adminsecretprefix: secret/crypto/peerOrganizations/cr-net/users/admin
+      orderersecretprefix: secret/crypto/peerOrganizations/cr-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+
+    channel:
+      name: allchannel      
+    orderer:
+      address: orderer50.hf.dev2.aws.blockchaincloudpoc-develop.com:8443
+    anchorstx: |-
+      CtQCChgKFggCGgYImY7IggYiCmFsbGNoYW5uZWwStwIKtAIKCmFsbGNoYW5uZWwSXhJcCgtBcHBs
+      aWNhdGlvbhJNCAESSQoFY3JNU1ASQBoHCgNNU1ASACILCgdSZWFkZXJzEgAiCwoHV3JpdGVycxIA
+      IgoKBkFkbWlucxIAIg8KC0VuZG9yc2VtZW50EgAaxQESwgEKC0FwcGxpY2F0aW9uErIBCAESrQEK
+      BWNyTVNQEqMBCAEaVwoLQW5jaG9yUGVlcnMSSBI+CjwKN3BlZXIwLmNyLW5ldC5oZi5kZXYyLmF3
+      cy5ibG9ja2NoYWluY2xvdWRwb2MtZGV2ZWxvcC5jb20Q+0EaBkFkbWlucxoHCgNNU1ASACILCgdS
+      ZWFkZXJzEgAiCwoHV3JpdGVycxIAIgoKBkFkbWlucxIAIg8KC0VuZG9yc2VtZW50EgAqBkFkbWlu
+      cw==
+
